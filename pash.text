@@ -1,0 +1,137 @@
+# ============================================================
+# 1. Project Structure
+# ============================================================
+
+# D:\Samsung\Rana Ahmed\Spam or Ham
+#
+# Spam or Ham/
+# ├── app.py
+# ├── spam_classifier_pipeline.pkl
+# └── teleShield.ico
+
+
+# ============================================================
+# 2. Run the Python GUI Application
+# ============================================================
+
+# Run app.py to test the GUI before creating the EXE
+
+& C:\Users\FreeComp\AppData\Local\Programs\Python\Python312\python.exe "D:\Samsung\Rana Ahmed\Spam or Ham\app.py"
+
+
+# ============================================================
+# 3. Install PyInstaller
+# ============================================================
+
+# Install PyInstaller using the same Python environment
+
+& C:\Users\FreeComp\AppData\Local\Programs\Python\Python312\python.exe -m pip install pyinstaller
+
+
+# ============================================================
+# 4. Check PyInstaller
+# ============================================================
+
+# Verify that PyInstaller is installed
+
+& C:\Users\FreeComp\AppData\Local\Programs\Python\Python312\python.exe -m PyInstaller --version
+
+
+# ============================================================
+# 5. Check Scikit-learn
+# ============================================================
+
+# Verify that scikit-learn is installed
+# The saved .pkl model depends on sklearn
+
+& C:\Users\FreeComp\AppData\Local\Programs\Python\Python312\python.exe -m pip show scikit-learn
+
+
+# ============================================================
+# 6. IMPORTANT: app.py Model Loading for EXE
+# ============================================================
+
+# For PyInstaller --onefile, load the model using resource_path()
+
+# Add this before loading the model:
+
+import os
+import sys
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+# Load the trained model:
+model = joblib.load(resource_path("spam_classifier_pipeline.pkl"))
+
+
+# ============================================================
+# 7. Delete Old PyInstaller Build
+# ============================================================
+
+# Use this before rebuilding the EXE
+
+Remove-Item -Recurse -Force build -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force dist -ErrorAction SilentlyContinue
+Remove-Item -Force TeleShieldAI.spec -ErrorAction SilentlyContinue
+
+
+# ============================================================
+# 8. Build the Windows EXE
+# ============================================================
+
+# --onefile
+# Creates one EXE file
+#
+# --windowed
+# Hides the black CMD/terminal window
+#
+# --name TeleShieldAI
+# Sets the EXE name
+#
+# --icon=teleShield.ico
+# Adds the custom application icon
+#
+# --add-data
+# Includes the trained ML model inside the EXE
+#
+# --collect-all sklearn
+# Includes the required scikit-learn files
+
+& C:\Users\FreeComp\AppData\Local\Programs\Python\Python312\python.exe -m PyInstaller --onefile --windowed --name TeleShieldAI --icon=teleShield.ico --add-data "spam_classifier_pipeline.pkl;." --collect-all sklearn app.py
+
+
+# ============================================================
+# 9. EXE Location
+# ============================================================
+
+# After a successful build:
+
+# D:\Samsung\Rana Ahmed\Spam or Ham\dist\TeleShieldAI.exe
+
+
+# ============================================================
+# 10. Run the EXE
+# ============================================================
+
+.\dist\TeleShieldAI.exe
+
+
+# ============================================================
+# 11. Final Project Structure
+# ============================================================
+
+# Spam or Ham/
+#
+# ├── app.py
+# ├── spam_classifier_pipeline.pkl
+# ├── teleShield.ico
+# ├── build/
+# ├── dist/
+# │   └── TeleShieldAI.exe
+# └── TeleShieldAI.spec
